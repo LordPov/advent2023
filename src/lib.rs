@@ -3,8 +3,8 @@ use std::io::Read;
 
 use anyhow::Result;
 
-mod day01;
-mod day02;
+pub mod day01;
+pub mod day02;
 mod template;
 
 pub fn read_file_to_string(filename: &str) -> Result<String> {

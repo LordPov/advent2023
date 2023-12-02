@@ -1,6 +1,6 @@
 use anyhow::{Context, Result};
 
-fn calibration_values(input: &str, digits_only: bool) -> Result<Vec<u32>> {
+pub fn calibration_values(input: &str, digits_only: bool) -> Result<Vec<u32>> {
     let function = if digits_only { calibration_value_digits_only } else { calibration_value_words_allowed };
     input.split_whitespace().map(|line| function(line)).collect()
 }

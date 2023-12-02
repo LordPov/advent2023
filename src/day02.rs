@@ -86,11 +86,11 @@ fn load_games(input: &str) -> Result<Vec<Game>> {
     input.lines().map(|line| Game::try_from(line)).collect()
 }
 
-fn sum_of_plausible_games(input: &str) -> Result<u64> {
+pub fn sum_of_plausible_games(input: &str) -> Result<u64> {
     Ok(load_games(input)?.iter().filter(|game| game.plausible(MAX_RED, MAX_GREEN, MAX_BLUE)).map(|g| g.id).sum::<u64>())
 }
 
-fn sum_of_required_colours_powers(input: &str) -> Result<u64> {
+pub fn sum_of_required_colours_powers(input: &str) -> Result<u64> {
     Ok(load_games(input)?.iter().map(|g| g.required_colours().power()).sum::<u64>())
 }
 
