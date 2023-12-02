@@ -49,37 +49,41 @@ impl Game {
     }
 }
 
-fn load_games(input: &str) -> Result<Vec<Game>> {
-    input.lines().map(|l| load_game(l)).collect()
-}
+impl TryFrom<&str> for Game {
+    type Error = anyhow::Error;
 
-fn load_game(line: &str) -> Result<Game> {
-    match line.split_once(": ") {
-        None => Err(anyhow!("game line missing ':' ({})", line)),
-        Some((game_str, hands_str)) => {
-            let id = game_str[5..].parse::<u64>().with_context(|| format!("Couldn't parse game number ({})", game_str))?;
-            let mut hands = vec![];
-            for hand_str in hands_str.split("; ") {
-                let mut hand = Hand::new();
-                for colour_str in hand_str.split(", ") {
-                    match colour_str.split_once(" ") {
-                        None => Err(anyhow!("colour missing ' ' ({})", colour_str))?,
-                        Some((num, colour)) => {
-                            let num = num.parse::<u64>().with_context(|| format!("Couldn't parse colour count ({})", colour_str))?;
-                            match colour {
-                                "red" => hand.red = num,
-                                "green" => hand.green = num,
-                                "blue" => hand.blue = num,
-                                _ => Err(anyhow!("Couldn't parse colour name ({})", colour_str))?,
+    fn try_from(value: &str) -> std::result::Result<Self, Self::Error> {
+        match value.split_once(": ") {
+            None => Err(anyhow!("game line missing ':' ({})", value)),
+            Some((game_str, hands_str)) => {
+                let id = game_str[5..].parse::<u64>().with_context(|| format!("Couldn't parse game number ({})", game_str))?;
+                let mut hands = vec![];
+                for hand_str in hands_str.split("; ") {
+                    let mut hand = Hand::new();
+                    for colour_str in hand_str.split(", ") {
+                        match colour_str.split_once(" ") {
+                            None => Err(anyhow!("colour missing ' ' ({})", colour_str))?,
+                            Some((num, colour)) => {
+                                let num = num.parse::<u64>().with_context(|| format!("Couldn't parse colour count ({})", colour_str))?;
+                                match colour {
+                                    "red" => hand.red = num,
+                                    "green" => hand.green = num,
+                                    "blue" => hand.blue = num,
+                                    _ => Err(anyhow!("Couldn't parse colour name ({})", colour_str))?,
+                                }
                             }
                         }
                     }
+                    hands.push(hand);
                 }
-                hands.push(hand);
+                Ok(Game { id, hands })
             }
-            Ok(Game { id, hands })
         }
     }
+}
+
+fn load_games(input: &str) -> Result<Vec<Game>> {
+    input.lines().map(|line| Game::try_from(line)).collect()
 }
 
 fn sum_of_plausible_games(input: &str) -> Result<u64> {
