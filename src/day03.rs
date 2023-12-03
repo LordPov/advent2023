@@ -102,10 +102,6 @@ pub fn sum_of_gear_ratios(input: &str) -> u64 {
 
 #[cfg(test)]
 mod tests {
-    use anyhow::{Context, Result};
-
-    use crate::read_file_to_string;
-
     use super::*;
 
     const EXAMPLE: &str = "467..114..\n\
@@ -120,26 +116,22 @@ mod tests {
                        .664.598..";
 
     #[test]
-    fn example_1() -> Result<()> {
+    fn example_1() {
         assert_eq!(sum_of_parts_near_symbols(EXAMPLE), 4361);
-        Ok(())
     }
 
     #[test]
-    fn example_2() -> Result<()> {
+    fn example_2() {
         assert_eq!(sum_of_gear_ratios(EXAMPLE), 467835);
-        Ok(())
     }
 
     #[test]
-    fn part_1() -> Result<()> {
-        println!("Part 1: {}", sum_of_parts_near_symbols(&read_file_to_string("res/day03.txt").with_context(|| "loading day data")?));
-        Ok(())
+    fn part_1() {
+        println!("Part 1: {}", sum_of_parts_near_symbols(include_str!("../res/day03.txt")));
     }
 
     #[test]
-    fn part_2() -> Result<()> {
-        println!("Part 2: {}", sum_of_gear_ratios(&read_file_to_string("res/day03.txt").with_context(|| "loading day data")?));
-        Ok(())
+    fn part_2() {
+        println!("Part 2: {}", sum_of_gear_ratios(include_str!("../res/day03.txt")));
     }
 }

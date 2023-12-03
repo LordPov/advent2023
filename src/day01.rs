@@ -99,8 +99,6 @@ fn number_at_pos(line: &[u8], pos: usize) -> Option<u32> {
 
 #[cfg(test)]
 mod tests {
-    use crate::read_file_to_string;
-
     use super::*;
 
     #[test]
@@ -121,13 +119,13 @@ mod tests {
 
     #[test]
     fn part_1() -> Result<()> {
-        println!("Part 1: {}", calibration_values(&read_file_to_string("res/day01.txt")?, true)?.iter().sum::<u32>());
+        println!("Part 1: {}", calibration_values(include_str!("../res/day01.txt"), true)?.iter().sum::<u32>());
         Ok(())
     }
 
     #[test]
     fn part_2() -> Result<()> {
-        println!("Part 2: {}", calibration_values(&read_file_to_string("res/day01.txt")?, false)?.iter().sum::<u32>());
+        println!("Part 2: {}", calibration_values(include_str!("../res/day01.txt"), false)?.iter().sum::<u32>());
         Ok(())
     }
 }

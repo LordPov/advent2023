@@ -96,8 +96,6 @@ pub fn sum_of_required_colours_powers(input: &str) -> Result<u64> {
 
 #[cfg(test)]
 mod tests {
-    use crate::read_file_to_string;
-
     use super::*;
 
     const EXAMPLE: &str = "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green\nGame 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue\nGame 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red\nGame 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red\nGame 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green";
@@ -116,13 +114,13 @@ mod tests {
 
     #[test]
     fn part_1() -> Result<()> {
-        println!("Part 1: {}", sum_of_plausible_games(&read_file_to_string("res/day02.txt").with_context(|| "loading day data")?)?);
+        println!("Part 1: {}", sum_of_plausible_games(include_str!("../res/day02.txt"))?);
         Ok(())
     }
 
     #[test]
     fn part_2() -> Result<()> {
-        println!("Part 2: {}", sum_of_required_colours_powers(&read_file_to_string("res/day02.txt").with_context(|| "loading day data")?)?);
+        println!("Part 2: {}", sum_of_required_colours_powers(include_str!("../res/day02.txt"))?);
         Ok(())
     }
 }
