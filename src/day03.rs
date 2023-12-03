@@ -48,56 +48,6 @@ impl Symbol {
     }
 }
 
-fn near_symbol(data: &Vec<&[u8]>, x: usize, y: usize) -> bool {
-    let min_x = if x == 0 { 0 } else { x - 1 };
-    let min_y = if y == 0 { 0 } else { y - 1 };
-    let max_x = if x == data[0].len() - 1 { x } else { x + 1 };
-    let max_y = if y == data.len() - 1 { y } else { y + 1 };
-    for i in min_y..=max_y {
-        for j in min_x..=max_x {
-            match data[i][j] {
-                b'0' | b'1' | b'2' | b'3' | b'4' | b'5' | b'6' | b'7' | b'8' | b'9' | b'.' => {}
-                _ => return true,
-            }
-        }
-    }
-    false
-}
-
-fn load_parts_near_symbols(input: &str) -> Vec<u64> {
-    let data: Vec<&[u8]> = input.split('\n').map(|l| l.as_bytes()).collect();
-    let y_len = data.len();
-    let x_len = data[0].len();
-    let mut parts = vec![];
-    let mut part = 0u64;
-    let mut symbol = false;
-    for y in 0..y_len {
-        for x in 0..x_len {
-            match data[y][x] {
-                b'0'..=b'9' => {
-                    part = part * 10 + (data[y][x] - b'0') as u64;
-                    if !symbol {
-                        symbol = near_symbol(&data, x, y);
-                    }
-                }
-                _ => {
-                    if symbol && part > 0 {
-                        parts.push(part);
-                    }
-                    part = 0;
-                    symbol = false;
-                }
-            }
-        }
-        if symbol && part > 0 {
-            parts.push(part);
-        }
-        part = 0;
-        symbol = false;
-    }
-    parts
-}
-
 fn load_things(input: &str) -> (Vec<Part>, Vec<Symbol>) {
     let data: Vec<&[u8]> = input.split('\n').map(|l| l.as_bytes()).collect();
     let mut parts = vec![];
@@ -130,7 +80,11 @@ fn load_things(input: &str) -> (Vec<Part>, Vec<Symbol>) {
 }
 
 pub fn sum_of_parts_near_symbols(input: &str) -> u64 {
-    load_parts_near_symbols(input).iter().sum::<u64>()
+    let (parts, symbols) = load_things(input);
+    parts.iter()
+        .filter(|part| part.positions.iter().any(|pos| symbols.iter().any(|symbol| symbol.position.near(pos))))
+        .map(|part| part.number)
+        .sum()
 }
 
 pub fn sum_of_gear_ratios(input: &str) -> u64 {
