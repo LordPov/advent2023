@@ -4,8 +4,12 @@ struct Event {
 }
 
 impl Event {
+    fn distance(&self, press: u64) -> u64 {
+        press * (self.time - press)
+    }
+
     fn distances(&self) -> Vec<u64> {
-        (0..=self.time).map(|press| press * (self.time - press)).collect()
+        (0..=self.time).map(|press| self.distance(press)).collect()
     }
 }
 
@@ -29,7 +33,9 @@ pub fn number_of_winning_combos_part_1(input: &str) -> u64 {
 
 pub fn number_of_winning_combos_part_2(input: &str) -> u64 {
     let event = load_event(input);
-    event.distances().into_iter().filter(|&d| d > event.record).count() as u64
+    let first_winning = (0..=event.time).find(|&press| event.distance(press) > event.record).unwrap();
+    let last_winning = (0..=event.time).rfind(|&press| event.distance(press) > event.record).unwrap();
+    last_winning - first_winning + 1
 }
 
 #[cfg(test)]
