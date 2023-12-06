@@ -4,22 +4,8 @@ struct Event {
 }
 
 impl Event {
-    fn button_presses(&self) -> Vec<RaceResult> {
-        (0..=self.time).map(|press| RaceResult::new(press, press * (self.time - press))).collect()
-    }
-}
-
-struct RaceResult {
-    _press: u64,
-    distance: u64,
-}
-
-impl RaceResult {
-    fn new(press: u64, distance: u64) -> Self {
-        RaceResult {
-            _press: press,
-            distance,
-        }
+    fn distances(&self) -> Vec<u64> {
+        (0..=self.time).map(|press| press * (self.time - press)).collect()
     }
 }
 
@@ -30,8 +16,20 @@ fn load_events(input: &str) -> Vec<Event> {
     times.zip(records).map(|(time, record)| Event { time, record }).collect()
 }
 
-pub fn number_of_winning_combos(input: &str) -> u64 {
-    load_events(input).iter().map(|event| event.button_presses().iter().filter(|r| r.distance > event.record).count() as u64).product()
+fn load_event(input: &str) -> Event {
+    let (time_str, record_str) = input.split_once('\n').unwrap();
+    let time = time_str.replace(' ', "").split_once(':').unwrap().1.parse::<u64>().unwrap();
+    let record = record_str.replace(' ', "").split_once(':').unwrap().1.parse::<u64>().unwrap();
+    Event { time, record }
+}
+
+pub fn number_of_winning_combos_part_1(input: &str) -> u64 {
+    load_events(input).iter().map(|event| event.distances().into_iter().filter(|&d| d > event.record).count() as u64).product()
+}
+
+pub fn number_of_winning_combos_part_2(input: &str) -> u64 {
+    let event = load_event(input);
+    event.distances().into_iter().filter(|&d| d > event.record).count() as u64
 }
 
 #[cfg(test)]
@@ -42,20 +40,21 @@ mod tests {
 
     #[test]
     fn example_1() {
-        assert_eq!(number_of_winning_combos(EXAMPLE), 288);
+        assert_eq!(number_of_winning_combos_part_1(EXAMPLE), 288);
     }
 
     #[test]
     fn example_2() {
+        assert_eq!(number_of_winning_combos_part_2(EXAMPLE), 71503);
     }
 
     #[test]
     fn part_1() {
-        println!("Part 1: {}", number_of_winning_combos(include_str!("../res/day06.txt")));
+        println!("Part 1: {}", number_of_winning_combos_part_1(include_str!("../res/day06.txt")));
     }
 
     #[test]
     fn part_2() {
-        println!("Part 2: {}", include_str!("../res/day06.txt").len());
+        println!("Part 2: {}", number_of_winning_combos_part_2(include_str!("../res/day06.txt")));
     }
 }
